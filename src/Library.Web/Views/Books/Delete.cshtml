@@ -1,0 +1,16 @@
+@model BookDetailsDto
+@{
+    ViewData["Title"] = "Buch löschen";
+}
+<h1 class="h4 text-danger">Buch löschen</h1>
+
+<div class="alert alert-warning mt-3">
+    Wirklich das Buch <strong>@Model.Title</strong> (@Model.BookNumber) löschen?
+    <div class="small">Hinweis: Löschen ist nur möglich, wenn das Buch nicht ausgeliehen ist.</div>
+</div>
+
+<form method="post" asp-action="DeleteConfirmed" class="d-flex gap-2">
+    <input type="hidden" name="id" value="@Model.BookId" />
+    <button class="btn btn-danger" type="submit">Ja, löschen</button>
+    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.BookId">Abbrechen</a>
+</form>

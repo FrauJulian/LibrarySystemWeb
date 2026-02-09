@@ -1,0 +1,15 @@
+@model StudentDetailsDto
+@{
+    ViewData["Title"] = "Schüler deaktivieren";
+}
+<h1 class="h4 text-danger">Schüler deaktivieren</h1>
+
+<div class="alert alert-warning mt-3">
+    Wirklich <strong>@Model.FirstName @Model.LastName</strong> (Ausweisnummer: <strong>@Model.CardNumber</strong>) deaktivieren?
+</div>
+
+<form method="post" asp-action="DeactivateConfirmed" class="d-flex gap-2">
+    <input type="hidden" name="id" value="@Model.StudentId" />
+    <button class="btn btn-danger" type="submit">Ja, deaktivieren</button>
+    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.StudentId">Abbrechen</a>
+</form>

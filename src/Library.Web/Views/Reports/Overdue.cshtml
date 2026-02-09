@@ -1,0 +1,62 @@
+@model IReadOnlyList<OverdueItemDto>
+@{
+    ViewData["Title"] = "Mahnlisten";
+    var months = (ViewBag.Months as int?) ?? 3;
+    var query = (ViewBag.Q as string) ?? "";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 m-0">Mahnliste (älter als @months Monate)</h1>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <label class="form-label">Schwelle (Monate)</label>
+        <input class="form-control" name="months" value="@months" style="max-width: 120px;" />
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Suche</label>
+        <input class="form-control" name="query" value="@query" placeholder="Schüler, Ausweisnummer, Buchnummer, Titel" />
+    </div>
+    <div class="col-auto d-flex align-items-end">
+        <button class="btn btn-outline-primary" type="submit">Anzeigen</button>
+    </div>
+    <div class="col-auto d-flex align-items-end">
+        <a class="btn btn-outline-secondary" asp-action="Overdue" asp-route-months="@months">Reset</a>
+    </div>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">Keine überfälligen Ausleihen gefunden.</div>
+}
+else
+{
+    <table class="table table-sm table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Schüler</th>
+            <th>Buch</th>
+            <th>Ausgeliehen am</th>
+            <th class="text-end">Tage überfällig</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>
+                    <div class="fw-semibold">@x.StudentFullName</div>
+                    <div class="text-muted small">@x.StudentCardNumber</div>
+                </td>
+                <td>
+                    <div class="fw-semibold">@x.BookTitle</div>
+                    <div class="text-muted small">@x.BookNumber</div>
+                </td>
+                <td>@x.LoanedAtUtc.ToLocalTime().ToString("dd.MM.yyyy")</td>
+                <td class="text-end">@x.DaysOverdue</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

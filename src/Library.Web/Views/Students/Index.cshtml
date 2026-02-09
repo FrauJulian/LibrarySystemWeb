@@ -1,0 +1,46 @@
+@model IReadOnlyList<StudentListItemDto>
+@{
+    ViewData["Title"] = "Schüler";
+    var search = ViewBag.Search as StudentSearchViewModel ?? new StudentSearchViewModel();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 m-0">Schüler</h1>
+    <a class="btn btn-primary" asp-action="Create">Neu</a>
+</div>
+
+<form class="row g-2 mb-3" method="get">
+    <div class="col-sm-6 col-md-4">
+        <input class="form-control" name="NameContains" value="@search.NameContains" placeholder="Name enthält..." />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-secondary" type="submit">Suchen</button>
+    </div>
+</form>
+
+<table class="table table-sm table-striped align-middle">
+    <thead>
+    <tr>
+        <th>Ausweisnummer</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th class="text-end">Aktive Ausleihen</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.CardNumber</td>
+            <td>@s.FirstName @s.LastName</td>
+            <td>@(s.IsActive ? "aktiv" : "deaktiviert")</td>
+            <td class="text-end">@s.ActiveLoanCount</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@s.StudentId">Details</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@s.StudentId">Bearbeiten</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

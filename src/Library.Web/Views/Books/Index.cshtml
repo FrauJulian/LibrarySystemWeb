@@ -1,0 +1,68 @@
+@model IReadOnlyList<BookListItemDto>
+@{
+    ViewData["Title"] = "Bücher";
+    var search = ViewBag.Search as BookSearchViewModel ?? new BookSearchViewModel();
+    var subjects = ViewBag.Subjects as List<SelectListItem> ?? [];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 m-0">Bücher</h1>
+    <a class="btn btn-primary" asp-action="Create">Neu</a>
+</div>
+
+<form class="row g-2 mb-3" method="get">
+    <div class="col-md-4">
+        <input class="form-control" name="TitleContains" value="@search.TitleContains" placeholder="Titel enthält..." />
+    </div>
+    <div class="col-md-4">
+        <input class="form-control" name="AuthorContains" value="@search.AuthorContains" placeholder="Autor/Herausgeber enthält..." />
+    </div>
+    <div class="col-md-3">
+        <select class="form-select" name="SubjectId">
+            <option value="">(alle Sachgebiete)</option>
+            @foreach (var s in subjects)
+            {
+                if (s.Selected)
+                {
+                    <option value="@s.Value" selected>@s.Text</option>
+                }
+                else
+                {
+                    <option value="@s.Value">@s.Text</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-secondary" type="submit">Suchen</button>
+    </div>
+</form>
+
+<table class="table table-sm table-striped align-middle">
+    <thead>
+    <tr>
+        <th>Buchnummer</th>
+        <th>Titel</th>
+        <th>Autor/Herausgeber</th>
+        <th>Sachgebiet</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var b in Model)
+    {
+        <tr>
+            <td>@b.BookNumber</td>
+            <td>@b.Title</td>
+            <td>@b.AuthorOrEditor</td>
+            <td>@b.SubjectName</td>
+            <td>@(b.IsLoaned ? "ausgeliehen" : "verfügbar")</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@b.BookId">Details</a>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@b.BookId">Bearbeiten</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

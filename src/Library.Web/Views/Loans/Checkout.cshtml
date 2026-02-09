@@ -1,0 +1,140 @@
+@model CheckoutPageViewModel
+@{
+    ViewData["Title"] = "Ausleihe";
+}
+
+<h1 class="h4">Ausleihe</h1>
+<p class="text-muted mb-3">Du kannst entweder direkt Nummern eintippen oder über die Suche auswählen.</p>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6">Schüler suchen</h2>
+                <form method="get" class="row g-2">
+                    <input type="hidden" name="bookNumber" value="@Model.BookNumber" />
+                    <div class="col-8">
+                        <input class="form-control" name="studentQ" value="@Model.StudentQ" placeholder="Name oder Ausweisnummer" />
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-outline-primary w-100" type="submit">Suchen</button>
+                    </div>
+                </form>
+
+                @if (Model.StudentResults.Count > 0)
+                {
+                    <div class="table-responsive mt-3">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                            <tr>
+                                <th>Ausweis</th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var s in Model.StudentResults)
+                            {
+                                <tr>
+                                    <td class="text-nowrap">@s.CardNumber</td>
+                                    <td>@s.FirstName @s.LastName</td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-primary"
+                                           asp-action="Checkout"
+                                           asp-route-studentCardNumber="@s.CardNumber"
+                                           asp-route-bookNumber="@Model.BookNumber"
+                                           asp-route-studentQ="@Model.StudentQ"
+                                           asp-route-bookQ="@Model.BookQ">Auswählen</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (!string.IsNullOrWhiteSpace(Model.StudentQ))
+                {
+                    <div class="alert alert-info mt-3 mb-0">Keine Treffer.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6">Buch suchen</h2>
+                <form method="get" class="row g-2">
+                    <input type="hidden" name="studentCardNumber" value="@Model.StudentCardNumber" />
+                    <div class="col-8">
+                        <input class="form-control" name="bookQ" value="@Model.BookQ" placeholder="Buchnummer, Titel oder Autor" />
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-outline-primary w-100" type="submit">Suchen</button>
+                    </div>
+                </form>
+
+                @if (Model.BookResults.Count > 0)
+                {
+                    <div class="table-responsive mt-3">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                            <tr>
+                                <th>Buchnummer</th>
+                                <th>Titel</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var b in Model.BookResults)
+                            {
+                                <tr>
+                                    <td class="text-nowrap">@b.BookNumber</td>
+                                    <td>
+                                        <div class="fw-semibold">@b.Title</div>
+                                        <div class="text-muted small">@b.AuthorOrEditor · @b.SubjectName</div>
+                                    </td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-primary"
+                                           asp-action="Checkout"
+                                           asp-route-studentCardNumber="@Model.StudentCardNumber"
+                                           asp-route-bookNumber="@b.BookNumber"
+                                           asp-route-studentQ="@Model.StudentQ"
+                                           asp-route-bookQ="@Model.BookQ">Auswählen</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (!string.IsNullOrWhiteSpace(Model.BookQ))
+                {
+                    <div class="alert alert-info mt-3 mb-0">Keine Treffer.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="mt-4">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row g-2">
+        <div class="col-md-4">
+            <label asp-for="StudentCardNumber" class="form-label"></label>
+            <input asp-for="StudentCardNumber" class="form-control" />
+            <span asp-validation-for="StudentCardNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4">
+            <label asp-for="BookNumber" class="form-label"></label>
+            <input asp-for="BookNumber" class="form-control" />
+            <span asp-validation-for="BookNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-primary w-100" type="submit">Weiter</button>
+        </div>
+    </div>
+</form>

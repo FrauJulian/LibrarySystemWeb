@@ -1,0 +1,55 @@
+@model DashboardStatsDto
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="p-4 rounded-3 bg-light border mb-3">
+    <h1 class="h3 mb-2">Bibliotheksverwaltung BSEVITA</h1>
+    <p class="mb-0 text-muted">Schnellzugriff auf die wichtigsten Funktionen.</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Bücher gesamt</div>
+                <div class="display-6">@Model.TotalBooks</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Aktiv ausgeliehen</div>
+                <div class="display-6">@Model.LoanedBooks</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Schüler gesamt</div>
+                <div class="display-6">@Model.TotalStudents</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="text-muted">Überfällige Mahnungen</div>
+                <div class="display-6">@Model.OverdueLoans</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-primary" asp-controller="Loans" asp-action="Checkout">Ausleihe</a>
+    <a class="btn btn-outline-primary" asp-controller="Returns" asp-action="Index">Rückgabe</a>
+    <a class="btn btn-outline-secondary" asp-controller="Loans" asp-action="Active">Aktive Ausleihen</a>
+    <a class="btn btn-outline-secondary" asp-controller="Reports" asp-action="Overdue">Mahnlisten</a>
+    <a class="btn btn-outline-secondary" asp-controller="Reports" asp-action="Borrowers">Schüler mit Ausleihen</a>
+    <a class="btn btn-outline-secondary" asp-controller="Reports" asp-action="Stats">Statistiken</a>
+    <a class="btn btn-outline-secondary" asp-controller="Books" asp-action="Index">Bücher</a>
+    <a class="btn btn-outline-secondary" asp-controller="Students" asp-action="Index">Schüler</a>
+</div>

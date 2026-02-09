@@ -1,0 +1,48 @@
+@model ReturnVerifyViewModel
+@{
+    ViewData["Title"] = "Rückgabe verifizieren";
+    var v = Model.Verification;
+}
+
+<h1 class="h4">Rückgabe verifizieren</h1>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Buchnummer</dt>
+            <dd class="col-sm-9">@v.BookNumber</dd>
+
+            <dt class="col-sm-3">Buchtitel</dt>
+            <dd class="col-sm-9">@v.BookTitle</dd>
+
+            <dt class="col-sm-3">Ausweisnummer</dt>
+            <dd class="col-sm-9">@v.StudentCardNumber</dd>
+
+            <dt class="col-sm-3">Schüler</dt>
+            <dd class="col-sm-9">@v.StudentFullName</dd>
+
+            <dt class="col-sm-3">Ausgeliehen am (UTC)</dt>
+            <dd class="col-sm-9">@((v.LoanedAtUtc == default) ? "-" : v.LoanedAtUtc.ToString("yyyy-MM-dd"))</dd>
+        </dl>
+    </div>
+</div>
+
+@if (!v.CanReturn)
+{
+    <div class="alert alert-danger mt-3">
+        <strong>Rückgabe nicht möglich:</strong> @v.BlockingReason
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index" asp-route-bookNumber="@Model.BookNumber">Zurück</a>
+}
+else
+{
+    <div class="alert alert-success mt-3">
+        Rückgabe speichern? (Nach der Rückgabe werden nur anonymisierte Statistiken abgelegt.)
+    </div>
+
+    <form method="post" asp-action="Confirm" class="d-flex gap-2">
+        <input type="hidden" name="BookNumber" value="@v.BookNumber" />
+        <button class="btn btn-success" type="submit">Rückgabe speichern</button>
+        <a class="btn btn-outline-secondary" asp-action="Index" asp-route-bookNumber="@v.BookNumber">Abbrechen</a>
+    </form>
+}

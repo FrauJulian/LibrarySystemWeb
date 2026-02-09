@@ -1,0 +1,55 @@
+@model IReadOnlyList<LoanListItemDto>
+@{
+    ViewData["Title"] = "Aktive Ausleihen";
+    var query = (ViewBag.Q as string) ?? "";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 m-0">Aktive Ausleihen</h1>
+    <a class="btn btn-primary" asp-action="Checkout">Neue Ausleihe</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input class="form-control" name="query" value="@query" placeholder="Suche: Buchnummer, Titel, Schülername, Ausweisnummer" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" type="submit">Suchen</button>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-outline-secondary" asp-action="Active">Reset</a>
+    </div>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">Keine aktiven Ausleihen.</div>
+}
+else
+{
+    <table class="table table-sm table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Buch</th>
+            <th>Schüler</th>
+            <th>Ausgeliehen am</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var x in Model)
+        {
+            <tr>
+                <td>
+                    <div class="fw-semibold">@x.BookTitle</div>
+                    <div class="text-muted small">@x.BookNumber</div>
+                </td>
+                <td>
+                    <div class="fw-semibold">@x.StudentFullName</div>
+                    <div class="text-muted small">@x.StudentCardNumber</div>
+                </td>
+                <td>@x.LoanedAtUtc.ToLocalTime().ToString("dd.MM.yyyy")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

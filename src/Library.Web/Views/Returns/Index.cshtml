@@ -1,0 +1,73 @@
+@model ReturnPageViewModel
+@{
+    ViewData["Title"] = "Rückgabe";
+}
+
+<h1 class="h4">Rückgabe</h1>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h2 class="h6">Buch suchen</h2>
+        <form method="get" class="row g-2">
+            <div class="col-md-6">
+                <input class="form-control" name="query" value="@Model.Q" placeholder="Buchnummer, Titel oder Autor" />
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-primary" type="submit">Suchen</button>
+            </div>
+            <div class="col-auto">
+                <a class="btn btn-outline-secondary" asp-action="Index">Reset</a>
+            </div>
+        </form>
+
+        @if (Model.Results.Count > 0)
+        {
+            <div class="table-responsive mt-3">
+                <table class="table table-sm table-hover">
+                    <thead>
+                    <tr>
+                        <th>Buchnummer</th>
+                        <th>Titel</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var b in Model.Results)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@b.BookNumber</td>
+                            <td>
+                                <div class="fw-semibold">@b.Title</div>
+                                <div class="text-muted small">@b.AuthorOrEditor · @b.SubjectName</div>
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-primary" asp-action="Index" asp-route-bookNumber="@b.BookNumber">Auswählen</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(Model.Q))
+        {
+            <div class="alert alert-info mt-3 mb-0">Keine Treffer.</div>
+        }
+    </div>
+</div>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row g-2">
+        <div class="col-md-6">
+            <label asp-for="BookNumber" class="form-label"></label>
+            <input asp-for="BookNumber" class="form-control" />
+            <span asp-validation-for="BookNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end">
+            <button class="btn btn-primary w-100" type="submit">Weiter</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,41 @@
+@model BookDetailsDto
+@{
+    ViewData["Title"] = "Buchdetails";
+}
+<h1 class="h4">Buchdetails</h1>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Buchnummer</dt>
+            <dd class="col-sm-9">@Model.BookNumber</dd>
+
+            <dt class="col-sm-3">Titel</dt>
+            <dd class="col-sm-9">@Model.Title</dd>
+
+            <dt class="col-sm-3">Autor/Herausgeber</dt>
+            <dd class="col-sm-9">@Model.AuthorOrEditor</dd>
+
+            <dt class="col-sm-3">Sachgebiet</dt>
+            <dd class="col-sm-9">@Model.SubjectName</dd>
+
+            <dt class="col-sm-3">ISBN</dt>
+            <dd class="col-sm-9">@Model.Isbn</dd>
+
+            <dt class="col-sm-3">Verlag</dt>
+            <dd class="col-sm-9">@Model.Publisher</dd>
+
+            <dt class="col-sm-3">Verlagsort</dt>
+            <dd class="col-sm-9">@Model.PublisherCity</dd>
+
+            <dt class="col-sm-3">Erscheinungsdatum</dt>
+            <dd class="col-sm-9">@Model.PublishedOn</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-3 d-flex gap-2">
+    <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.BookId">Bearbeiten</a>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.BookId">Löschen</a>
+    <a class="btn btn-outline-secondary" asp-action="Index">Zurück</a>
+</div>

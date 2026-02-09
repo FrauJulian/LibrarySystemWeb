@@ -1,0 +1,135 @@
+@model IReadOnlyList<MonthlyBookStatDto>
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Statistik (anonymisiert)";
+    var year = ViewBag.Year as int?;
+
+    var grouped = Model
+        .GroupBy(x => new { x.BookNumber, x.BookTitle })
+        .Select(g => new { g.Key.BookNumber, g.Key.BookTitle, Count = g.Sum(x => x.LoanCount) })
+        .OrderByDescending(x => x.Count)
+        .ToList();
+
+    var top = grouped.Take(8).ToList();
+    var other = grouped.Skip(8).Sum(x => x.Count);
+
+    var labels = top.Select(x => $"{x.BookTitle} ({x.BookNumber})").ToList();
+    var values = top.Select(x => x.Count).ToList();
+    if (other > 0)
+    {
+        labels.Add("Sonstige");
+        values.Add(other);
+    }
+
+    var labelsJson = JsonSerializer.Serialize(labels);
+    var valuesJson = JsonSerializer.Serialize(values);
+}
+
+<h1 class="h4">Statistik (anonymisiert)</h1>
+<p class="text-muted">Nur aggregierte Zählwerte pro Buch (keine personenbezogenen Daten).</p>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <label class="form-label">Jahr (optional)</label>
+        <input class="form-control" name="year" value="@(year?.ToString() ?? "")" placeholder="z.B. 2025" style="max-width: 140px;" />
+    </div>
+    <div class="col-auto d-flex align-items-end">
+        <button class="btn btn-outline-primary" type="submit">Filtern</button>
+    </div>
+    <div class="col-auto d-flex align-items-end">
+        <a class="btn btn-outline-secondary" asp-action="Stats">Reset</a>
+    </div>
+</form>
+
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6">Top-Ausleihen (Kreisdiagramm)</h2>
+                @if (grouped.Count == 0)
+                {
+                    <div class="alert alert-info mb-0">Keine Statistikdaten vorhanden.</div>
+                }
+                else
+                {
+                    <canvas id="statsChart" height="260"></canvas>
+                    <div class="text-muted small mt-2">Top 8 Bücher im Filter, Rest = „Sonstige“.</div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6">Monatliche Statistik</h2>
+
+                @if (Model.Count == 0)
+                {
+                    <div class="alert alert-info mb-0">Keine Statistikdaten vorhanden.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Jahr</th>
+                                <th>Monat</th>
+                                <th>Buch</th>
+                                <th class="text-end">Ausleihen</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var x in Model.OrderByDescending(x => x.Year).ThenByDescending(x => x.Month).ThenBy(x => x.BookTitle))
+                            {
+                                <tr>
+                                    <td>@x.Year</td>
+                                    <td>@x.Month</td>
+                                    <td>
+                                        <div class="fw-semibold">@x.BookTitle</div>
+                                        <div class="text-muted small">@x.BookNumber</div>
+                                    </td>
+                                    <td class="text-end">@x.LoanCount</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            const labels = @Html.Raw(labelsJson);
+            const values = @Html.Raw(valuesJson);
+
+            if (!labels || labels.length === 0) return;
+
+            const ctx = document.getElementById('statsChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        })();
+    </script>
+}
