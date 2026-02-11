@@ -10,7 +10,7 @@
 </div>
 
 <form method="post" asp-action="DeleteConfirmed" class="d-flex gap-2">
-    <input type="hidden" name="id" value="@Model.BookId" />
+    <input type="hidden" name="id" value="@Model.BookId"/>
     <button class="btn btn-danger" type="submit">Ja, löschen</button>
     <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.BookId">Abbrechen</a>
 </form>

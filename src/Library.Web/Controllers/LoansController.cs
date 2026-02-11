@@ -1,6 +1,5 @@
-using Library.Domain.Common;
-using Library.Domain.Dtos;
-using Library.Domain.Interfaces;
+using Library.Models.Dtos;
+using Library.Models.Interfaces;
 using Library.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +7,14 @@ namespace Library.Web.Controllers;
 
 public sealed class LoansController(ILoanService loans, IBookService books, IStudentService students) : Controller
 {
-    public async Task<IActionResult> Checkout(string? studentCardNumber = null, string? bookNumber = null, string? studentQ = null, string? bookQ = null, CancellationToken cancellationToken = default)
-        => View(await BuildCheckoutPageVm(studentCardNumber, bookNumber, studentQ, bookQ, cancellationToken));
+    public async Task<IActionResult> Checkout(string? studentCardNumber = null, string? bookNumber = null,
+        string? studentQ = null, string? bookQ = null, CancellationToken cancellationToken = default)
+    {
+        return View(await BuildCheckoutPageVm(studentCardNumber, bookNumber, studentQ, bookQ, cancellationToken));
+    }
 
-    private async Task<CheckoutPageViewModel> BuildCheckoutPageVm(string? studentCardNumber, string? bookNumber, string? studentQ, string? bookQ, CancellationToken cancellationToken)
+    private async Task<CheckoutPageViewModel> BuildCheckoutPageVm(string? studentCardNumber, string? bookNumber,
+        string? studentQ, string? bookQ, CancellationToken cancellationToken)
     {
         var viewModel = new CheckoutPageViewModel
         {
@@ -30,7 +33,7 @@ public sealed class LoansController(ILoanService loans, IBookService books, IStu
         if (!string.IsNullOrWhiteSpace(viewModel.BookQ))
         {
             var q = viewModel.BookQ.Trim();
-            viewModel.BookResults = await books.SearchAsync(new BookSearchQuery(TitleContains: q, AuthorContains: q, SubjectId: null), cancellationToken);
+            viewModel.BookResults = await books.SearchAsync(new BookSearchQuery(q, q, null), cancellationToken);
             viewModel.BookResults = viewModel.BookResults
                 .Where(b => b.BookNumber.Contains(q, StringComparison.OrdinalIgnoreCase)
                             || b.Title.Contains(q, StringComparison.OrdinalIgnoreCase)
@@ -41,14 +44,17 @@ public sealed class LoansController(ILoanService loans, IBookService books, IStu
         return viewModel;
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult Checkout(CheckoutPageViewModel viewModel)
     {
         if (!ModelState.IsValid) return View(viewModel);
-        return RedirectToAction(nameof(Verify), new { studentCardNumber = viewModel.StudentCardNumber, bookNumber = viewModel.BookNumber });
+        return RedirectToAction(nameof(Verify),
+            new { studentCardNumber = viewModel.StudentCardNumber, bookNumber = viewModel.BookNumber });
     }
 
-    public async Task<IActionResult> Verify(string studentCardNumber, string bookNumber, CancellationToken cancellationToken)
+    public async Task<IActionResult> Verify(string studentCardNumber, string bookNumber,
+        CancellationToken cancellationToken)
     {
         var req = new CheckoutRequestDto(studentCardNumber, bookNumber);
         var res = await loans.VerifyCheckoutAsync(req, cancellationToken);
@@ -64,16 +70,20 @@ public sealed class LoansController(ILoanService loans, IBookService books, IStu
         return View(new CheckoutVerifyViewModel { Request = req, Verification = res.Value });
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Confirm(CheckoutViewModel viewModel, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) return RedirectToAction(nameof(Checkout), new { viewModel.StudentCardNumber, viewModel.BookNumber });
+        if (!ModelState.IsValid)
+            return RedirectToAction(nameof(Checkout), new { viewModel.StudentCardNumber, viewModel.BookNumber });
 
-        var res = await loans.ConfirmCheckoutAsync(new CheckoutRequestDto(viewModel.StudentCardNumber, viewModel.BookNumber), cancellationToken);
+        var res = await loans.ConfirmCheckoutAsync(
+            new CheckoutRequestDto(viewModel.StudentCardNumber, viewModel.BookNumber), cancellationToken);
         if (!res.IsSuccess)
         {
             TempData["Error"] = res.Error ?? "Fehler.";
-            return RedirectToAction(nameof(Verify), new { studentCardNumber = viewModel.StudentCardNumber, bookNumber = viewModel.BookNumber });
+            return RedirectToAction(nameof(Verify),
+                new { studentCardNumber = viewModel.StudentCardNumber, bookNumber = viewModel.BookNumber });
         }
 
         TempData["Success"] = "Ausleihe gespeichert.";

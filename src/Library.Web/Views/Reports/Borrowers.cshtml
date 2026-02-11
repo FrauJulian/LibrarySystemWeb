@@ -1,14 +1,15 @@
 @model IReadOnlyList<StudentWithLoansDto>
 @{
     ViewData["Title"] = "Schüler mit aktiven Ausleihen";
-    var query = (ViewBag.Q as string) ?? "";
+    var query = ViewBag.Q as string ?? "";
 }
 
 <h1 class="h4">Schüler mit aktiven Ausleihen</h1>
 
 <form method="get" class="row g-2 mb-3">
     <div class="col-md-6">
-        <input class="form-control" name="query" value="@query" placeholder="Suche: Schüler, Ausweisnummer, Buchnummer, Titel" />
+        <input class="form-control" name="query" value="@query"
+               placeholder="Suche: Schüler, Ausweisnummer, Buchnummer, Titel"/>
     </div>
     <div class="col-auto">
         <button class="btn btn-outline-primary" type="submit">Suchen</button>

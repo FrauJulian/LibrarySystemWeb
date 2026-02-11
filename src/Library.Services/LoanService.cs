@@ -1,8 +1,8 @@
-using Library.Domain.Common;
-using Library.Domain.Dtos;
-using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Persistence.Entities;
+using Library.Models.Common;
+using Library.Models.Dtos;
+using Library.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application;
@@ -26,7 +26,8 @@ internal sealed class LoanService(LibraryDbContext db) : ILoanService
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Results<CheckoutVerificationDto>> VerifyCheckoutAsync(CheckoutRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<Results<CheckoutVerificationDto>> VerifyCheckoutAsync(CheckoutRequestDto request,
+        CancellationToken cancellationToken = default)
     {
         var studentCard = request.StudentCardNumber.Trim();
         var bookNumber = request.BookNumber.Trim();
@@ -35,68 +36,61 @@ internal sealed class LoanService(LibraryDbContext db) : ILoanService
             .FirstOrDefaultAsync(student => student.CardNumber == studentCard, cancellationToken);
 
         if (student is null)
-        {
             return Results<CheckoutVerificationDto>.Ok(new CheckoutVerificationDto(
                 studentCard,
                 "(nicht gefunden)",
                 bookNumber,
                 "(unbekannt)",
-                CanCheckout: false,
-                BlockingReason: "Schüler mit dieser Ausweisnummer wurde nicht gefunden. Bitte zuerst erfassen."
+                false,
+                "Schüler mit dieser Ausweisnummer wurde nicht gefunden. Bitte zuerst erfassen."
             ));
-        }
 
         if (!student.IsActive)
-        {
             return Results<CheckoutVerificationDto>.Ok(new CheckoutVerificationDto(
                 studentCard,
                 student.FirstName + " " + student.LastName,
                 bookNumber,
                 "(unbekannt)",
-                CanCheckout: false,
-                BlockingReason: "Schüler ist deaktiviert."
+                false,
+                "Schüler ist deaktiviert."
             ));
-        }
 
         var book = await db.Books.AsNoTracking()
             .FirstOrDefaultAsync(book => book.BookNumber == bookNumber, cancellationToken);
 
         if (book is null)
-        {
             return Results<CheckoutVerificationDto>.Ok(new CheckoutVerificationDto(
                 studentCard,
                 student.FirstName + " " + student.LastName,
                 bookNumber,
                 "(nicht gefunden)",
-                CanCheckout: false,
-                BlockingReason: "Buch existiert noch nicht. Bitte zuerst erfassen (On-Demand)."
+                false,
+                "Buch existiert noch nicht. Bitte zuerst erfassen (On-Demand)."
             ));
-        }
 
         var isLoaned = await db.Loans.AsNoTracking().AnyAsync(loan => loan.BookId == book.BookId, cancellationToken);
         if (isLoaned)
-        {
             return Results<CheckoutVerificationDto>.Ok(new CheckoutVerificationDto(
                 studentCard,
                 student.FirstName + " " + student.LastName,
                 bookNumber,
                 book.Title,
-                CanCheckout: false,
-                BlockingReason: "Dieses Buch ist aktuell ausgeliehen."
+                false,
+                "Dieses Buch ist aktuell ausgeliehen."
             ));
-        }
 
         return Results<CheckoutVerificationDto>.Ok(new CheckoutVerificationDto(
             studentCard,
             student.FirstName + " " + student.LastName,
             bookNumber,
             book.Title,
-            CanCheckout: true,
-            BlockingReason: null
+            true,
+            null
         ));
     }
 
-    public async Task<Results> ConfirmCheckoutAsync(CheckoutRequestDto request, CancellationToken cancellationToken = default)
+    public async Task<Results> ConfirmCheckoutAsync(CheckoutRequestDto request,
+        CancellationToken cancellationToken = default)
     {
         var verification = await VerifyCheckoutAsync(request, cancellationToken);
         if (!verification.IsSuccess || verification.Value is null)
@@ -108,8 +102,10 @@ internal sealed class LoanService(LibraryDbContext db) : ILoanService
         var studentCard = request.StudentCardNumber.Trim();
         var bookNumber = request.BookNumber.Trim();
 
-        var studentId = await db.Students.Where(student => student.CardNumber == studentCard).Select(s => s.StudentId).FirstAsync(cancellationToken);
-        var bookId = await db.Books.Where(book => book.BookNumber == bookNumber).Select(b => b.BookId).FirstAsync(cancellationToken);
+        var studentId = await db.Students.Where(student => student.CardNumber == studentCard).Select(s => s.StudentId)
+            .FirstAsync(cancellationToken);
+        var bookId = await db.Books.Where(book => book.BookNumber == bookNumber).Select(b => b.BookId)
+            .FirstAsync(cancellationToken);
 
         var isLoaned = await db.Loans.AnyAsync(loan => loan.BookId == bookId, cancellationToken);
         if (isLoaned) return Results.Fail("Dieses Buch ist aktuell ausgeliehen.");
@@ -132,7 +128,8 @@ internal sealed class LoanService(LibraryDbContext db) : ILoanService
         }
     }
 
-    public async Task<Results<ReturnVerificationDto>> VerifyReturnAsync(string bookNumber, CancellationToken cancellationToken = default)
+    public async Task<Results<ReturnVerificationDto>> VerifyReturnAsync(string bookNumber,
+        CancellationToken cancellationToken = default)
     {
         var bookNumberTrimmed = bookNumber.Trim();
 
@@ -142,17 +139,15 @@ internal sealed class LoanService(LibraryDbContext db) : ILoanService
             .FirstOrDefaultAsync(loan => loan.Book.BookNumber == bookNumberTrimmed, cancellationToken);
 
         if (loan is null)
-        {
             return Results<ReturnVerificationDto>.Ok(new ReturnVerificationDto(
                 bookNumberTrimmed,
                 "(nicht gefunden)",
                 "(unbekannt)",
                 "(unbekannt)",
                 default,
-                CanReturn: false,
-                BlockingReason: "Keine aktive Ausleihe zu dieser Buchnummer gefunden."
+                false,
+                "Keine aktive Ausleihe zu dieser Buchnummer gefunden."
             ));
-        }
 
         return Results<ReturnVerificationDto>.Ok(new ReturnVerificationDto(
             loan.Book.BookNumber,
@@ -160,8 +155,8 @@ internal sealed class LoanService(LibraryDbContext db) : ILoanService
             loan.Student.CardNumber,
             loan.Student.FirstName + " " + loan.Student.LastName,
             loan.LoanedAtUtc,
-            CanReturn: true,
-            BlockingReason: null
+            true,
+            null
         ));
     }
 

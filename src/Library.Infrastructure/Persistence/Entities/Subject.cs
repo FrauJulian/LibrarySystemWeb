@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public sealed partial class Subject
+public sealed class Subject
 {
     public int SubjectId { get; set; }
     public string Name { get; set; } = null!;

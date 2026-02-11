@@ -1,5 +1,5 @@
-using Library.Domain.Dtos;
-using Library.Domain.Interfaces;
+using Library.Models.Dtos;
+using Library.Models.Interfaces;
 using Library.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,10 +8,13 @@ namespace Library.Web.Controllers;
 
 public sealed class BooksController(IBookService books) : Controller
 {
-    public async Task<IActionResult> Index([FromQuery] BookSearchViewModel viewModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index([FromQuery] BookSearchViewModel viewModel,
+        CancellationToken cancellationToken)
     {
         await LoadSubjectsAsync(cancellationToken, viewModel.SubjectId);
-        var list = await books.SearchAsync(new BookSearchQuery(viewModel.TitleContains, viewModel.AuthorContains, viewModel.SubjectId), cancellationToken);
+        var list = await books.SearchAsync(
+            new BookSearchQuery(viewModel.TitleContains, viewModel.AuthorContains, viewModel.SubjectId),
+            cancellationToken);
         ViewBag.Search = viewModel;
         return View(list);
     }
@@ -29,24 +32,26 @@ public sealed class BooksController(IBookService books) : Controller
         return View(new BookUpsertViewModel());
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(BookUpsertViewModel viewModel, CancellationToken cancellationToken)
     {
         await LoadSubjectsAsync(cancellationToken, viewModel.SubjectId);
         if (!ModelState.IsValid) return View(viewModel);
 
         var res = await books.CreateAsync(new BookUpsertDto(
-            viewModel.BookNumber, viewModel.Title, viewModel.AuthorOrEditor, viewModel.SubjectId, viewModel.Isbn, viewModel.Publisher, viewModel.PublisherCity, viewModel.PublishedOn
+            viewModel.BookNumber, viewModel.Title, viewModel.AuthorOrEditor, viewModel.SubjectId, viewModel.Isbn,
+            viewModel.Publisher, viewModel.PublisherCity, viewModel.PublishedOn
         ), cancellationToken);
 
         if (res.IsSuccess) return RedirectToAction(nameof(Details), new { id = res.Value });
-        
+
         ModelState.AddModelError(string.Empty, res.Error ?? "Fehler.");
         return View(viewModel);
-
     }
 
-    public async Task<IActionResult> CreateFromCheckout(string bookNumber, string studentCardNumber, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateFromCheckout(string bookNumber, string studentCardNumber,
+        CancellationToken cancellationToken)
     {
         await LoadSubjectsAsync(cancellationToken, null);
         var viewModel = new BookCreateFromCheckoutViewModel
@@ -54,24 +59,27 @@ public sealed class BooksController(IBookService books) : Controller
             BookNumber = bookNumber,
             StudentCardNumber = studentCardNumber
         };
-        
+
         return View(viewModel);
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateFromCheckout(BookCreateFromCheckoutViewModel viewModel, CancellationToken cancellationToken)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateFromCheckout(BookCreateFromCheckoutViewModel viewModel,
+        CancellationToken cancellationToken)
     {
         await LoadSubjectsAsync(cancellationToken, viewModel.SubjectId);
         if (!ModelState.IsValid) return View(viewModel);
 
         var res = await books.CreateAsync(new BookUpsertDto(
-            viewModel.BookNumber, viewModel.Title, viewModel.AuthorOrEditor, viewModel.SubjectId, viewModel.Isbn, viewModel.Publisher, viewModel.PublisherCity, viewModel.PublishedOn
+            viewModel.BookNumber, viewModel.Title, viewModel.AuthorOrEditor, viewModel.SubjectId, viewModel.Isbn,
+            viewModel.Publisher, viewModel.PublisherCity, viewModel.PublishedOn
         ), cancellationToken);
 
         if (res.IsSuccess)
             return RedirectToAction("Verify", "Loans",
                 new { studentCardNumber = viewModel.StudentCardNumber, bookNumber = viewModel.BookNumber });
-        
+
         ModelState.AddModelError(string.Empty, res.Error ?? "Fehler.");
         return View(viewModel);
     }
@@ -97,21 +105,22 @@ public sealed class BooksController(IBookService books) : Controller
         return View(vm);
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, BookUpsertViewModel viewModel, CancellationToken cancellationToken)
     {
         await LoadSubjectsAsync(cancellationToken, viewModel.SubjectId);
         if (!ModelState.IsValid) return View(viewModel);
 
         var res = await books.UpdateAsync(id, new BookUpsertDto(
-            viewModel.BookNumber, viewModel.Title, viewModel.AuthorOrEditor, viewModel.SubjectId, viewModel.Isbn, viewModel.Publisher, viewModel.PublisherCity, viewModel.PublishedOn
+            viewModel.BookNumber, viewModel.Title, viewModel.AuthorOrEditor, viewModel.SubjectId, viewModel.Isbn,
+            viewModel.Publisher, viewModel.PublisherCity, viewModel.PublishedOn
         ), cancellationToken);
 
         if (res.IsSuccess) return RedirectToAction(nameof(Details), new { id });
-        
+
         ModelState.AddModelError(string.Empty, res.Error ?? "Fehler.");
         return View(viewModel);
-
     }
 
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
@@ -121,7 +130,8 @@ public sealed class BooksController(IBookService books) : Controller
         return View(res.Value);
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
     {
         var res = await books.DeleteAsync(id, cancellationToken);
@@ -132,6 +142,7 @@ public sealed class BooksController(IBookService books) : Controller
     private async Task LoadSubjectsAsync(CancellationToken cancellationToken, int? selected)
     {
         var subjects = await books.GetSubjectsAsync(cancellationToken);
-        ViewBag.Subjects = subjects.Select(student => new SelectListItem(student.Name, student.SubjectId.ToString(), selected == student.SubjectId)).ToList();
+        ViewBag.Subjects = subjects.Select(student =>
+            new SelectListItem(student.Name, student.SubjectId.ToString(), selected == student.SubjectId)).ToList();
     }
 }

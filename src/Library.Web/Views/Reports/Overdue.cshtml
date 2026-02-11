@@ -1,8 +1,8 @@
 @model IReadOnlyList<OverdueItemDto>
 @{
     ViewData["Title"] = "Mahnlisten";
-    var months = (ViewBag.Months as int?) ?? 3;
-    var query = (ViewBag.Q as string) ?? "";
+    var months = ViewBag.Months as int? ?? 3;
+    var query = ViewBag.Q as string ?? "";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -12,11 +12,12 @@
 <form method="get" class="row g-2 mb-3">
     <div class="col-auto">
         <label class="form-label">Schwelle (Monate)</label>
-        <input class="form-control" name="months" value="@months" style="max-width: 120px;" />
+        <input class="form-control" name="months" value="@months" style="max-width: 120px;"/>
     </div>
     <div class="col-md-5">
         <label class="form-label">Suche</label>
-        <input class="form-control" name="query" value="@query" placeholder="Schüler, Ausweisnummer, Buchnummer, Titel" />
+        <input class="form-control" name="query" value="@query"
+               placeholder="Schüler, Ausweisnummer, Buchnummer, Titel"/>
     </div>
     <div class="col-auto d-flex align-items-end">
         <button class="btn btn-outline-primary" type="submit">Anzeigen</button>

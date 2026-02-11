@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
-using Library.Domain.Common;
-using Library.Domain.Dtos;
-using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Persistence.Entities;
+using Library.Models.Common;
+using Library.Models.Dtos;
+using Library.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application;
@@ -12,7 +12,8 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
 {
     private static readonly Regex BookNumberRegex = MyRegex();
 
-    public async Task<IReadOnlyList<(int SubjectId, string Name)>> GetSubjectsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<(int SubjectId, string Name)>> GetSubjectsAsync(
+        CancellationToken cancellationToken = default)
     {
         return await db.Subjects.AsNoTracking()
             .OrderBy(subject => subject.Name)
@@ -20,7 +21,8 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<BookListItemDto>> SearchAsync(BookSearchQuery query, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<BookListItemDto>> SearchAsync(BookSearchQuery query,
+        CancellationToken cancellationToken = default)
     {
         var data = db.Books.AsNoTracking();
 
@@ -28,7 +30,7 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
         {
             var title = query.TitleContains.Trim();
             data = data.Where(book => book.Title.Contains(title));
-        } 
+        }
         else if (!string.IsNullOrWhiteSpace(query.AuthorContains))
         {
             var author = query.AuthorContains.Trim();
@@ -37,7 +39,7 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
 
         if (query.SubjectId is not null)
             data = data.Where(book => book.SubjectId == query.SubjectId);
-        
+
         return await data
             .OrderBy(b => b.Title)
             .Select(b => new BookListItemDto(
@@ -54,16 +56,19 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
 
     public async Task<Results<BookDetailsDto>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var book = await db.Books.AsNoTracking().Include(x => x.Subject).FirstOrDefaultAsync(x => x.BookId == id, cancellationToken);
+        var book = await db.Books.AsNoTracking().Include(x => x.Subject)
+            .FirstOrDefaultAsync(x => x.BookId == id, cancellationToken);
         return book is null
             ? Results<BookDetailsDto>.Fail("Buch nicht gefunden.")
             : Results<BookDetailsDto>.Ok(MapDetails(book));
     }
 
-    public async Task<Results<BookDetailsDto>> GetByBookNumberAsync(string bookNumber, CancellationToken cancellationToken = default)
+    public async Task<Results<BookDetailsDto>> GetByBookNumberAsync(string bookNumber,
+        CancellationToken cancellationToken = default)
     {
         var key = bookNumber.Trim();
-        var book = await db.Books.AsNoTracking().Include(x => x.Subject).FirstOrDefaultAsync(x => x.BookNumber == key, cancellationToken);
+        var book = await db.Books.AsNoTracking().Include(x => x.Subject)
+            .FirstOrDefaultAsync(x => x.BookNumber == key, cancellationToken);
         return book is null
             ? Results<BookDetailsDto>.Fail("Buch nicht gefunden.")
             : Results<BookDetailsDto>.Ok(MapDetails(book));
@@ -106,7 +111,8 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
         if (!BookNumberRegex.IsMatch(bookNumber))
             return Results.Fail("Buchnummer-Format ungültig (erwartet: xxxxx-jjjj).");
 
-        var duplicate = await db.Books.AnyAsync(book => book.BookId != id && book.BookNumber == bookNumber, cancellationToken);
+        var duplicate = await db.Books.AnyAsync(book => book.BookId != id && book.BookNumber == bookNumber,
+            cancellationToken);
         if (duplicate) return Results.Fail("Diese Buchnummer existiert bereits.");
 
         entity.BookNumber = bookNumber;

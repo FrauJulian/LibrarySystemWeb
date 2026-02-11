@@ -1,8 +1,8 @@
 @model CheckoutVerifyViewModel
 @{
     ViewData["Title"] = "Ausleihe verifizieren";
-    bool bookExists = (ViewBag.BookExists as bool?) ?? true;
-    bool studentExists = (ViewBag.StudentExists as bool?) ?? true;
+    var bookExists = ViewBag.BookExists as bool? ?? true;
+    var studentExists = ViewBag.StudentExists as bool? ?? true;
     var v = Model.Verification;
 }
 
@@ -33,12 +33,15 @@
     </div>
 
     <div class="d-flex gap-2">
-        <a class="btn btn-outline-secondary" asp-action="Checkout" asp-route-studentCardNumber="@Model.Request.StudentCardNumber" asp-route-bookNumber="@Model.Request.BookNumber">Zurück</a>
+        <a class="btn btn-outline-secondary" asp-action="Checkout"
+           asp-route-studentCardNumber="@Model.Request.StudentCardNumber"
+           asp-route-bookNumber="@Model.Request.BookNumber">Zurück</a>
 
         @if (!bookExists && studentExists)
         {
             <a class="btn btn-primary" asp-controller="Books" asp-action="CreateFromCheckout"
-               asp-route-bookNumber="@Model.Request.BookNumber" asp-route-studentCardNumber="@Model.Request.StudentCardNumber">
+               asp-route-bookNumber="@Model.Request.BookNumber"
+               asp-route-studentCardNumber="@Model.Request.StudentCardNumber">
                 Buch jetzt erfassen (On-Demand)
             </a>
         }
@@ -56,9 +59,11 @@ else
     </div>
 
     <form method="post" asp-action="Confirm" class="d-flex gap-2">
-        <input type="hidden" name="StudentCardNumber" value="@Model.Request.StudentCardNumber" />
-        <input type="hidden" name="BookNumber" value="@Model.Request.BookNumber" />
+        <input type="hidden" name="StudentCardNumber" value="@Model.Request.StudentCardNumber"/>
+        <input type="hidden" name="BookNumber" value="@Model.Request.BookNumber"/>
         <button class="btn btn-success" type="submit">Ausleihe speichern</button>
-        <a class="btn btn-outline-secondary" asp-action="Checkout" asp-route-studentCardNumber="@Model.Request.StudentCardNumber" asp-route-bookNumber="@Model.Request.BookNumber">Abbrechen</a>
+        <a class="btn btn-outline-secondary" asp-action="Checkout"
+           asp-route-studentCardNumber="@Model.Request.StudentCardNumber"
+           asp-route-bookNumber="@Model.Request.BookNumber">Abbrechen</a>
     </form>
 }

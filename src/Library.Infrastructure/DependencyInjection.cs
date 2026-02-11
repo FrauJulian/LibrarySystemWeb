@@ -10,12 +10,9 @@ public static class DependencyInjection
     public static IServiceCollection AddLibraryInfrastructure(this IServiceCollection services, IConfiguration config)
     {
         var connStr = config.GetConnectionString("LibraryDb")
-                     ?? throw new InvalidOperationException("Missing connection string 'LibraryDb'.");
+                      ?? throw new InvalidOperationException("Missing connection string 'LibraryDb'.");
 
-        services.AddDbContext<LibraryDbContext>(opt =>
-        {
-            opt.UseSqlServer(connStr);
-        });
+        services.AddDbContext<LibraryDbContext>(opt => { opt.UseSqlServer(connStr); });
 
         return services;
     }

@@ -1,5 +1,5 @@
-@model IReadOnlyList<MonthlyBookStatDto>
 @using System.Text.Json
+@model IReadOnlyList<MonthlyBookStatDto>
 @{
     ViewData["Title"] = "Statistik (anonymisiert)";
     var year = ViewBag.Year as int?;
@@ -31,7 +31,8 @@
 <form method="get" class="row g-2 mb-3">
     <div class="col-auto">
         <label class="form-label">Jahr (optional)</label>
-        <input class="form-control" name="year" value="@(year?.ToString() ?? "")" placeholder="z.B. 2025" style="max-width: 140px;" />
+        <input class="form-control" name="year" value="@(year?.ToString() ?? "")" placeholder="z.B. 2025"
+               style="max-width: 140px;"/>
     </div>
     <div class="col-auto d-flex align-items-end">
         <button class="btn btn-outline-primary" type="submit">Filtern</button>
@@ -126,7 +127,7 @@
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { position: 'bottom' }
+                        legend: {position: 'bottom'}
                     }
                 }
             });

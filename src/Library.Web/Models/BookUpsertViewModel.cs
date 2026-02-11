@@ -4,16 +4,19 @@ namespace Library.Web.Models;
 
 public class BookUpsertViewModel
 {
-    [Required, StringLength(10)]
+    [Required]
+    [StringLength(10)]
     [RegularExpression(@"^\d{5}-\d{4}$", ErrorMessage = "Format: xxxxx-jjjj (z.B. 01234-2024)")]
     [Display(Name = "Buchnummer")]
     public string BookNumber { get; set; } = "";
 
-    [Required, StringLength(200)]
+    [Required]
+    [StringLength(200)]
     [Display(Name = "Titel")]
     public string Title { get; set; } = "";
 
-    [Required, StringLength(200)]
+    [Required]
+    [StringLength(200)]
     [Display(Name = "Autor/Herausgeber")]
     public string AuthorOrEditor { get; set; } = "";
 

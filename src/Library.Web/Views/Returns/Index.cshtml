@@ -10,7 +10,7 @@
         <h2 class="h6">Buch suchen</h2>
         <form method="get" class="row g-2">
             <div class="col-md-6">
-                <input class="form-control" name="query" value="@Model.Q" placeholder="Buchnummer, Titel oder Autor" />
+                <input class="form-control" name="query" value="@Model.Q" placeholder="Buchnummer, Titel oder Autor"/>
             </div>
             <div class="col-auto">
                 <button class="btn btn-outline-primary" type="submit">Suchen</button>
@@ -41,7 +41,8 @@
                                 <div class="text-muted small">@b.AuthorOrEditor · @b.SubjectName</div>
                             </td>
                             <td class="text-end">
-                                <a class="btn btn-sm btn-primary" asp-action="Index" asp-route-bookNumber="@b.BookNumber">Auswählen</a>
+                                <a class="btn btn-sm btn-primary" asp-action="Index"
+                                   asp-route-bookNumber="@b.BookNumber">Auswählen</a>
                             </td>
                         </tr>
                     }
@@ -62,7 +63,7 @@
     <div class="row g-2">
         <div class="col-md-6">
             <label asp-for="BookNumber" class="form-label"></label>
-            <input asp-for="BookNumber" class="form-control" />
+            <input asp-for="BookNumber" class="form-control"/>
             <span asp-validation-for="BookNumber" class="text-danger"></span>
         </div>
 

@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public sealed partial class Student
+public sealed class Student
 {
     public int StudentId { get; set; }
     public string CardNumber { get; set; } = null!;

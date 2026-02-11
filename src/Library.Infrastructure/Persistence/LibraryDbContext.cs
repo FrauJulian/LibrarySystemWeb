@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infrastructure.Persistence;
 
-public partial class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbContext(options)
+public class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbContext(options)
 {
     public virtual DbSet<Student> Students => Set<Student>();
     public virtual DbSet<Book> Books => Set<Book>();
@@ -56,14 +56,14 @@ public partial class LibraryDbContext(DbContextOptions<LibraryDbContext> options
                 "BookNumber LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'");
 
             entity.HasOne(d => d.Subject)
-                  .WithMany(p => p.Books)
-                  .HasForeignKey(d => d.SubjectId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Books)
+                .HasForeignKey(d => d.SubjectId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(d => d.Loan)
-                  .WithOne(p => p.Book)
-                  .HasForeignKey<Loan>(p => p.BookId)
-                  .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(p => p.Book)
+                .HasForeignKey<Loan>(p => p.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Loan>(entity =>
@@ -76,9 +76,9 @@ public partial class LibraryDbContext(DbContextOptions<LibraryDbContext> options
             entity.HasIndex(e => e.BookId).IsUnique();
 
             entity.HasOne(d => d.Student)
-                  .WithMany(p => p.Loans)
-                  .HasForeignKey(d => d.StudentId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.Loans)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<MonthlyBookStat>(entity =>
@@ -97,5 +97,5 @@ public partial class LibraryDbContext(DbContextOptions<LibraryDbContext> options
                 .HasForeignKey(d => d.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-}
+    }
 }

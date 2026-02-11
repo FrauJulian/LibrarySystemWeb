@@ -1,13 +1,14 @@
-using Library.Domain.Dtos;
-using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
+using Library.Models.Dtos;
+using Library.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application;
 
 internal sealed class ReportService(LibraryDbContext db) : IReportService
 {
-    public async Task<IReadOnlyList<OverdueItemDto>> GetOverdueLoansAsync(int monthsThreshold = 3, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<OverdueItemDto>> GetOverdueLoansAsync(int monthsThreshold = 3,
+        CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
         var cutoff = now.AddMonths(-monthsThreshold);
@@ -16,7 +17,8 @@ internal sealed class ReportService(LibraryDbContext db) : IReportService
             .Include(loan => loan.Book)
             .Include(loan => loan.Student)
             .Where(loan => loan.LoanedAtUtc < cutoff)
-            .OrderBy(loan => loan.Student.LastName).ThenBy(loan => loan.Student.FirstName).ThenBy(loan => loan.LoanedAtUtc)
+            .OrderBy(loan => loan.Student.LastName).ThenBy(loan => loan.Student.FirstName)
+            .ThenBy(loan => loan.LoanedAtUtc)
             .Select(loan => new
             {
                 loan.Student.CardNumber,
@@ -37,35 +39,38 @@ internal sealed class ReportService(LibraryDbContext db) : IReportService
             .ToList();
     }
 
-    public async Task<IReadOnlyList<StudentWithLoansDto>> GetStudentsWithActiveLoansAsync(CancellationToken cancellationToken = default)
-{
-    var raw = await db.Loans.AsNoTracking()
-        .Include(loan => loan.Student)
-        .Include(loan => loan.Book)
-        .OrderBy(loan => loan.Student.LastName).ThenBy(loan => loan.Student.FirstName).ThenByDescending(loan => loan.LoanedAtUtc)
-        .Select(loan => new
-        {
-            loan.Student.CardNumber,
-            FullName = loan.Student.FirstName + " " + loan.Student.LastName,
-            loan.Book.BookNumber,
-            loan.Book.Title,
-            loan.LoanedAtUtc
-        })
-        .ToListAsync(cancellationToken);
+    public async Task<IReadOnlyList<StudentWithLoansDto>> GetStudentsWithActiveLoansAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var raw = await db.Loans.AsNoTracking()
+            .Include(loan => loan.Student)
+            .Include(loan => loan.Book)
+            .OrderBy(loan => loan.Student.LastName).ThenBy(loan => loan.Student.FirstName)
+            .ThenByDescending(loan => loan.LoanedAtUtc)
+            .Select(loan => new
+            {
+                loan.Student.CardNumber,
+                FullName = loan.Student.FirstName + " " + loan.Student.LastName,
+                loan.Book.BookNumber,
+                loan.Book.Title,
+                loan.LoanedAtUtc
+            })
+            .ToListAsync(cancellationToken);
 
-    return raw
-        .GroupBy(x => new { x.CardNumber, x.FullName })
-        .OrderBy(g => g.Key.FullName)
-        .Select(g => new StudentWithLoansDto(
-            g.Key.CardNumber,
-            g.Key.FullName,
-            g.Count(),
-            g.Select(b => new StudentLoanBookDto(b.BookNumber, b.Title, b.LoanedAtUtc)).ToList()
-        ))
-        .ToList();
-}
+        return raw
+            .GroupBy(x => new { x.CardNumber, x.FullName })
+            .OrderBy(g => g.Key.FullName)
+            .Select(g => new StudentWithLoansDto(
+                g.Key.CardNumber,
+                g.Key.FullName,
+                g.Count(),
+                g.Select(b => new StudentLoanBookDto(b.BookNumber, b.Title, b.LoanedAtUtc)).ToList()
+            ))
+            .ToList();
+    }
 
-public async Task<IReadOnlyList<MonthlyBookStatDto>> GetMonthlyBookStatsAsync(int? year = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<MonthlyBookStatDto>> GetMonthlyBookStatsAsync(int? year = null,
+        CancellationToken cancellationToken = default)
     {
         var query = db.MonthlyBookStats.AsNoTracking()
             .Include(s => s.Book)

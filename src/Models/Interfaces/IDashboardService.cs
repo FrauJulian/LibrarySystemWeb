@@ -1,8 +1,9 @@
-using Library.Domain.Dtos;
+using Library.Models.Dtos;
 
-namespace Library.Domain.Interfaces;
+namespace Library.Models.Interfaces;
 
 public interface IDashboardService
 {
-    Task<DashboardStatsDto> GetStatsAsync(int overdueMonthsThreshold = 3, CancellationToken cancellationToken = default);
+    Task<DashboardStatsDto> GetStatsAsync(int overdueMonthsThreshold = 3,
+        CancellationToken cancellationToken = default);
 }

@@ -1,4 +1,4 @@
-using Library.Domain.Dtos;
+using Library.Models.Dtos;
 
 namespace Library.Web.Models;
 

@@ -1,4 +1,4 @@
-namespace Library.Domain.Dtos;
+namespace Library.Models.Dtos;
 
 public sealed record BookListItemDto(
     int BookId,

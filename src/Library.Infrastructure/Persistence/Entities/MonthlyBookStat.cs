@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public sealed partial class MonthlyBookStat
+public sealed class MonthlyBookStat
 {
     public int MonthlyBookStatId { get; set; }
     public int Year { get; set; }

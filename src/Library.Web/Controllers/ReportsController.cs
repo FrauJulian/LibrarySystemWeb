@@ -1,11 +1,12 @@
-using Library.Domain.Interfaces;
+using Library.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Web.Controllers;
 
 public sealed class ReportsController(IReportService reports) : Controller
 {
-    public async Task<IActionResult> Overdue(int months = 3, string? query = null, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Overdue(int months = 3, string? query = null,
+        CancellationToken cancellationToken = default)
     {
         ViewBag.Months = months;
         ViewBag.Q = query ?? "";
@@ -30,7 +31,9 @@ public sealed class ReportsController(IReportService reports) : Controller
         list = list.Where(x =>
             x.StudentCardNumber.Contains(s, StringComparison.OrdinalIgnoreCase)
             || x.StudentFullName.Contains(s, StringComparison.OrdinalIgnoreCase)
-            || x.Books.Any(b => b.BookNumber.Contains(s, StringComparison.OrdinalIgnoreCase) || b.BookTitle.Contains(s, StringComparison.OrdinalIgnoreCase))
+            || x.Books.Any(b =>
+                b.BookNumber.Contains(s, StringComparison.OrdinalIgnoreCase) ||
+                b.BookTitle.Contains(s, StringComparison.OrdinalIgnoreCase))
         ).ToList();
         return View(list);
     }

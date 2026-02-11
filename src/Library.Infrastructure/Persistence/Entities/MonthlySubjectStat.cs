@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public partial class MonthlySubjectStat
+public class MonthlySubjectStat
 {
     public int MonthlySubjectStatId { get; set; }
     public int Year { get; set; }

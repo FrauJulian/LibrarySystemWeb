@@ -9,24 +9,24 @@
 
     <div class="mb-3">
         <label asp-for="CardNumber" class="form-label"></label>
-        <input asp-for="CardNumber" class="form-control" />
+        <input asp-for="CardNumber" class="form-control"/>
         <span asp-validation-for="CardNumber" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="FirstName" class="form-label"></label>
-        <input asp-for="FirstName" class="form-control" />
+        <input asp-for="FirstName" class="form-control"/>
         <span asp-validation-for="FirstName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="LastName" class="form-label"></label>
-        <input asp-for="LastName" class="form-control" />
+        <input asp-for="LastName" class="form-control"/>
         <span asp-validation-for="LastName" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-3">
-        <input asp-for="IsActive" class="form-check-input" />
+        <input asp-for="IsActive" class="form-check-input"/>
         <label asp-for="IsActive" class="form-check-label"></label>
     </div>
 
@@ -35,5 +35,5 @@
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

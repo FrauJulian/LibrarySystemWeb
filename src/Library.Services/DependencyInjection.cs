@@ -1,4 +1,4 @@
-using Library.Domain.Interfaces;
+using Library.Models.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Application;

@@ -12,9 +12,10 @@
             <div class="card-body">
                 <h2 class="h6">Schüler suchen</h2>
                 <form method="get" class="row g-2">
-                    <input type="hidden" name="bookNumber" value="@Model.BookNumber" />
+                    <input type="hidden" name="bookNumber" value="@Model.BookNumber"/>
                     <div class="col-8">
-                        <input class="form-control" name="studentQ" value="@Model.StudentQ" placeholder="Name oder Ausweisnummer" />
+                        <input class="form-control" name="studentQ" value="@Model.StudentQ"
+                               placeholder="Name oder Ausweisnummer"/>
                     </div>
                     <div class="col-4">
                         <button class="btn btn-outline-primary w-100" type="submit">Suchen</button>
@@ -65,9 +66,10 @@
             <div class="card-body">
                 <h2 class="h6">Buch suchen</h2>
                 <form method="get" class="row g-2">
-                    <input type="hidden" name="studentCardNumber" value="@Model.StudentCardNumber" />
+                    <input type="hidden" name="studentCardNumber" value="@Model.StudentCardNumber"/>
                     <div class="col-8">
-                        <input class="form-control" name="bookQ" value="@Model.BookQ" placeholder="Buchnummer, Titel oder Autor" />
+                        <input class="form-control" name="bookQ" value="@Model.BookQ"
+                               placeholder="Buchnummer, Titel oder Autor"/>
                     </div>
                     <div class="col-4">
                         <button class="btn btn-outline-primary w-100" type="submit">Suchen</button>
@@ -123,13 +125,13 @@
     <div class="row g-2">
         <div class="col-md-4">
             <label asp-for="StudentCardNumber" class="form-label"></label>
-            <input asp-for="StudentCardNumber" class="form-control" />
+            <input asp-for="StudentCardNumber" class="form-control"/>
             <span asp-validation-for="StudentCardNumber" class="text-danger"></span>
         </div>
 
         <div class="col-md-4">
             <label asp-for="BookNumber" class="form-label"></label>
-            <input asp-for="BookNumber" class="form-control" />
+            <input asp-for="BookNumber" class="form-control"/>
             <span asp-validation-for="BookNumber" class="text-danger"></span>
         </div>
 

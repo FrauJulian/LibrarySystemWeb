@@ -1,15 +1,16 @@
-using Library.Domain.Common;
-using Library.Domain.Dtos;
-using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Persistence.Entities;
+using Library.Models.Common;
+using Library.Models.Dtos;
+using Library.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Application;
 
 internal sealed class StudentService(LibraryDbContext db) : IStudentService
 {
-    public async Task<IReadOnlyList<StudentListItemDto>> SearchAsync(StudentSearchQuery query, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<StudentListItemDto>> SearchAsync(StudentSearchQuery query,
+        CancellationToken cancellationToken = default)
     {
         var q = db.Students.AsNoTracking();
 
@@ -27,7 +28,8 @@ internal sealed class StudentService(LibraryDbContext db) : IStudentService
                 .ToListAsync(cancellationToken);
         {
             var term = query.NameContains.Trim();
-            q = q.Where(student => (student.FirstName + " " + student.LastName).Contains(term) || student.LastName.Contains(term) || student.FirstName.Contains(term));
+            q = q.Where(student => (student.FirstName + " " + student.LastName).Contains(term) ||
+                                   student.LastName.Contains(term) || student.FirstName.Contains(term));
         }
 
         return await q
@@ -48,16 +50,19 @@ internal sealed class StudentService(LibraryDbContext db) : IStudentService
         var student = await db.Students.AsNoTracking().FirstOrDefaultAsync(x => x.StudentId == id, cancellationToken);
         return student is null
             ? Results<StudentDetailsDto>.Fail("Schüler nicht gefunden.")
-            : Results<StudentDetailsDto>.Ok(new StudentDetailsDto(student.StudentId, student.CardNumber, student.FirstName, student.LastName, student.IsActive));
+            : Results<StudentDetailsDto>.Ok(new StudentDetailsDto(student.StudentId, student.CardNumber,
+                student.FirstName, student.LastName, student.IsActive));
     }
 
-    public async Task<Results<StudentDetailsDto>> GetByCardNumberAsync(string cardNumber, CancellationToken cancellationToken = default)
+    public async Task<Results<StudentDetailsDto>> GetByCardNumberAsync(string cardNumber,
+        CancellationToken cancellationToken = default)
     {
         var key = cardNumber.Trim();
         var student = await db.Students.AsNoTracking().FirstOrDefaultAsync(x => x.CardNumber == key, cancellationToken);
         return student is null
             ? Results<StudentDetailsDto>.Fail("Schüler nicht gefunden.")
-            : Results<StudentDetailsDto>.Ok(new StudentDetailsDto(student.StudentId, student.CardNumber, student.FirstName, student.LastName, student.IsActive));
+            : Results<StudentDetailsDto>.Ok(new StudentDetailsDto(student.StudentId, student.CardNumber,
+                student.FirstName, student.LastName, student.IsActive));
     }
 
     public async Task<Results<int>> CreateAsync(StudentUpsertDto dto, CancellationToken cancellationToken = default)
@@ -86,7 +91,8 @@ internal sealed class StudentService(LibraryDbContext db) : IStudentService
         if (entity is null) return Results.Fail("Schüler nicht gefunden.");
 
         var card = dto.CardNumber.Trim();
-        var duplicate = await db.Students.AnyAsync(student => student.StudentId != id && student.CardNumber == card, cancellationToken);
+        var duplicate = await db.Students.AnyAsync(student => student.StudentId != id && student.CardNumber == card,
+            cancellationToken);
         if (duplicate) return Results.Fail("Diese Ausweisnummer existiert bereits.");
 
         entity.CardNumber = card;

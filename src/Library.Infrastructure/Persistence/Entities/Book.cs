@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public sealed partial class Book
+public sealed class Book
 {
     public int BookId { get; set; }
     public string BookNumber { get; set; } = null!; // xxxxx-jjjj

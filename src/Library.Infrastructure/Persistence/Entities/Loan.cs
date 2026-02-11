@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public sealed partial class Loan
+public sealed class Loan
 {
     public int LoanId { get; set; }
     public int BookId { get; set; }

@@ -22,7 +22,7 @@
             <dd class="col-sm-9">@v.StudentFullName</dd>
 
             <dt class="col-sm-3">Ausgeliehen am (UTC)</dt>
-            <dd class="col-sm-9">@((v.LoanedAtUtc == default) ? "-" : v.LoanedAtUtc.ToString("yyyy-MM-dd"))</dd>
+            <dd class="col-sm-9">@(v.LoanedAtUtc == default ? "-" : v.LoanedAtUtc.ToString("yyyy-MM-dd"))</dd>
         </dl>
     </div>
 </div>
@@ -41,7 +41,7 @@ else
     </div>
 
     <form method="post" asp-action="Confirm" class="d-flex gap-2">
-        <input type="hidden" name="BookNumber" value="@v.BookNumber" />
+        <input type="hidden" name="BookNumber" value="@v.BookNumber"/>
         <button class="btn btn-success" type="submit">Rückgabe speichern</button>
         <a class="btn btn-outline-secondary" asp-action="Index" asp-route-bookNumber="@v.BookNumber">Abbrechen</a>
     </form>
