@@ -1,12 +1,12 @@
 using System.Text.RegularExpressions;
-using Library.Infrastructure.Persistence;
-using Library.Infrastructure.Persistence.Entities;
+using Library.DataAccess.Persistence;
+using Library.DataAccess.Persistence.Entities;
 using Library.Models.Common;
 using Library.Models.Dtos;
 using Library.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.Application;
+namespace Library.Services;
 
 internal sealed partial class BookService(LibraryDbContext db) : IBookService
 {

@@ -1,4 +1,4 @@
-namespace Library.Infrastructure.Persistence.Entities;
+namespace Library.DataAccess.Persistence.Entities;
 
 public sealed class Loan
 {

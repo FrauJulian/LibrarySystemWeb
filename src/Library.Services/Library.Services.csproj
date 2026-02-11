@@ -3,11 +3,11 @@
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>Library.Application</RootNamespace>
+        <RootNamespace>Library.Services</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Models\Models.csproj"/>
-        <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Library.DataAccess\Library.DataAccess.csproj" />
     </ItemGroup>
 </Project>

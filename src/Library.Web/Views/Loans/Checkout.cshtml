@@ -30,6 +30,7 @@
                             <tr>
                                 <th>Ausweis</th>
                                 <th>Name</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -39,6 +40,7 @@
                                 <tr>
                                     <td class="text-nowrap">@s.CardNumber</td>
                                     <td>@s.FirstName @s.LastName</td>
+                                    <td>@(s.IsActive ? "aktiv" : "deaktiviert")</td>
                                     <td class="text-end">
                                         <a class="btn btn-sm btn-primary"
                                            asp-action="Checkout"
@@ -84,6 +86,7 @@
                             <tr>
                                 <th>Buchnummer</th>
                                 <th>Titel</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -96,6 +99,7 @@
                                         <div class="fw-semibold">@b.Title</div>
                                         <div class="text-muted small">@b.AuthorOrEditor · @b.SubjectName</div>
                                     </td>
+                                    <td>@(b.IsLoaned ? "ausgeliehen" : "verfügbar")</td>
                                     <td class="text-end">
                                         <a class="btn btn-sm btn-primary"
                                            asp-action="Checkout"

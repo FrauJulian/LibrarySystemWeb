@@ -1,7 +1,7 @@
-using Library.Infrastructure.Persistence.Entities;
+using Library.DataAccess.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.Infrastructure.Persistence;
+namespace Library.DataAccess.Persistence;
 
 public class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbContext(options)
 {
@@ -52,9 +52,14 @@ public class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbCo
             entity.HasIndex(e => e.AuthorOrEditor);
             entity.HasIndex(e => e.SubjectId);
 
-            entity.HasCheckConstraint("CK_Books_BookNumber_Format",
-                "BookNumber LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'");
-
+            entity.ToTable(t =>
+            {
+                t.HasCheckConstraint(
+                    "CK_Books_BookNumber_Format",
+                    "BookNumber LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'"
+                );
+            });
+            
             entity.HasOne(d => d.Subject)
                 .WithMany(p => p.Books)
                 .HasForeignKey(d => d.SubjectId)

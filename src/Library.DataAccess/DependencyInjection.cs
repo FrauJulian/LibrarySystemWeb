@@ -1,9 +1,9 @@
-using Library.Infrastructure.Persistence;
+using Library.DataAccess.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Library.Infrastructure;
+namespace Library.DataAccess;
 
 public static class DependencyInjection
 {

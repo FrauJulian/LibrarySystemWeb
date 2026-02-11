@@ -7,7 +7,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Library.Services\Library.Services.csproj"/>
-        <ProjectReference Include="..\Library.Infrastructure\Library.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Library.DataAccess\Library.DataAccess.csproj" />
         <ProjectReference Include="..\Models\Models.csproj"/>
     </ItemGroup>
 

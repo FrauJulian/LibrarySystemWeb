@@ -1,9 +1,9 @@
-using Library.Infrastructure.Persistence;
+using Library.DataAccess.Persistence;
 using Library.Models.Dtos;
 using Library.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.Application;
+namespace Library.Services;
 
 internal sealed class ReportService(LibraryDbContext db) : IReportService
 {

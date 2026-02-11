@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "src\Models\Models
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Services", "src\Library.Services\Library.Services.csproj", "{889B2223-95C0-4227-92BA-51272E5A3AAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Infrastructure", "src\Library.Infrastructure\Library.Infrastructure.csproj", "{75EDC9D5-A59D-4E62-8195-6FC1635486AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.DataAccess", "src\Library.DataAccess\Library.DataAccess.csproj", "{75EDC9D5-A59D-4E62-8195-6FC1635486AB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Web", "src\Library.Web\Library.Web.csproj", "{C2C10E2C-73B8-4F0F-88C1-B46AB824BD1F}"
 EndProject

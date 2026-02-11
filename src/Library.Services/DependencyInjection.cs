@@ -1,7 +1,7 @@
 using Library.Models.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Library.Application;
+namespace Library.Services;
 
 public static class DependencyInjection
 {
