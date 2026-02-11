@@ -1,6 +1,6 @@
 namespace Library.Infrastructure.Persistence.Entities;
 
-public partial class Book
+public sealed partial class Book
 {
     public int BookId { get; set; }
     public string BookNumber { get; set; } = null!; // xxxxx-jjjj
@@ -12,8 +12,7 @@ public partial class Book
     public string? PublisherCity { get; set; }
     public DateOnly? PublishedOn { get; set; }
     public DateTime CreatedAtUtc { get; set; }
-
-    public virtual Subject Subject { get; set; } = null!;
-    public virtual Loan? Loan { get; set; }
-    public virtual ICollection<MonthlyBookStat> MonthlyBookStats { get; set; } = new List<MonthlyBookStat>();
+    public Subject Subject { get; set; } = null!;
+    public Loan? Loan { get; set; }
+    public ICollection<MonthlyBookStat> MonthlyBookStats { get; set; } = new List<MonthlyBookStat>();
 }

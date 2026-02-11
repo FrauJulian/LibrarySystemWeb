@@ -474,43 +474,43 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Library.Application/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
-        "dependencies": {
-          "Library.Domain": "1.0.0",
-          "Library.Infrastructure": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/Library.Application.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Library.Application.dll": {}
-        }
-      },
-      "Library.Domain/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
-        "compile": {
-          "bin/placeholder/Library.Domain.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Library.Domain.dll": {}
-        }
-      },
       "Library.Infrastructure/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
-          "Library.Domain": "1.0.0",
           "Microsoft.EntityFrameworkCore": "10.0.2",
-          "Microsoft.EntityFrameworkCore.SqlServer": "10.0.2"
+          "Microsoft.EntityFrameworkCore.SqlServer": "10.0.2",
+          "Models": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Library.Infrastructure.dll": {}
         },
         "runtime": {
           "bin/placeholder/Library.Infrastructure.dll": {}
+        }
+      },
+      "Library.Services/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "Library.Infrastructure": "1.0.0",
+          "Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Library.Services.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Library.Services.dll": {}
+        }
+      },
+      "Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Models.dll": {}
         }
       }
     }
@@ -1136,29 +1136,29 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Library.Application/1.0.0": {
-      "type": "project",
-      "path": "../Library.Application/Library.Application.csproj",
-      "msbuildProject": "../Library.Application/Library.Application.csproj"
-    },
-    "Library.Domain/1.0.0": {
-      "type": "project",
-      "path": "../Library.Domain/Library.Domain.csproj",
-      "msbuildProject": "../Library.Domain/Library.Domain.csproj"
-    },
     "Library.Infrastructure/1.0.0": {
       "type": "project",
       "path": "../Library.Infrastructure/Library.Infrastructure.csproj",
       "msbuildProject": "../Library.Infrastructure/Library.Infrastructure.csproj"
+    },
+    "Library.Services/1.0.0": {
+      "type": "project",
+      "path": "../Library.Services/Library.Services.csproj",
+      "msbuildProject": "../Library.Services/Library.Services.csproj"
+    },
+    "Models/1.0.0": {
+      "type": "project",
+      "path": "../Models/Models.csproj",
+      "msbuildProject": "../Models/Models.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
-      "Library.Application >= 1.0.0",
-      "Library.Domain >= 1.0.0",
       "Library.Infrastructure >= 1.0.0",
+      "Library.Services >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 10.0.2",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.2"
+      "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.2",
+      "Models >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -1186,14 +1186,14 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Application\\Library.Application.csproj": {
-              "projectPath": "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Application\\Library.Application.csproj"
-            },
-            "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Domain\\Library.Domain.csproj": {
-              "projectPath": "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Domain\\Library.Domain.csproj"
-            },
             "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Infrastructure\\Library.Infrastructure.csproj": {
               "projectPath": "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Infrastructure\\Library.Infrastructure.csproj"
+            },
+            "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Services\\Library.Services.csproj": {
+              "projectPath": "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Library.Services\\Library.Services.csproj"
+            },
+            "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Models\\Models.csproj": {
+              "projectPath": "C:\\Users\\frauj\\Downloads\\BSEVITA.Bibliothek\\src\\Models\\Models.csproj"
             }
           }
         }
