@@ -24,4 +24,4 @@ public sealed record StudentUpsertDto(
     bool IsActive
 );
 
-public sealed record StudentSearchQuery(string? NameContains);
+public sealed record StudentSearchQuery(string? SeachContains);

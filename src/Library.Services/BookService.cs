@@ -21,27 +21,67 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<BookListItemDto>> SearchAsync(BookSearchQuery query,
+    public async Task<IReadOnlyList<BookListItemDto>> SearchAsync(
+        BookSearchQuery query,
         CancellationToken cancellationToken = default)
     {
-        var data = db.Books.AsNoTracking();
+        var results = new List<BookListItemDto>();
 
-        if (!string.IsNullOrWhiteSpace(query.TitleContains))
-        {
-            var title = query.TitleContains.Trim();
-            data = data.Where(book => book.Title.Contains(title));
-        }
-        else if (!string.IsNullOrWhiteSpace(query.AuthorContains))
-        {
-            var author = query.AuthorContains.Trim();
-            data = data.Where(book => book.AuthorOrEditor.Contains(author));
-        }
+        var baseQuery = db.Books.AsNoTracking();
 
         if (query.SubjectId is not null)
-            data = data.Where(book => book.SubjectId == query.SubjectId);
+            baseQuery = baseQuery.Where(b => b.SubjectId == query.SubjectId);
 
-        return await data
-            .OrderBy(b => b.Title)
+        if (!string.IsNullOrWhiteSpace(query.SearchContains))
+        {
+            var title = query.SearchContains.Trim();
+
+            var titleHits = await baseQuery
+                .Where(b => b.Title.Contains(title))
+                .Select(b => new BookListItemDto(
+                    b.BookId,
+                    b.BookNumber,
+                    b.Title,
+                    b.AuthorOrEditor,
+                    b.Subject.Name,
+                    b.Isbn,
+                    db.Loans.Any(l => l.BookId == b.BookId)
+                ))
+                .ToListAsync(cancellationToken);
+
+            results.AddRange(titleHits);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.AuthorContains))
+        {
+            var author = query.AuthorContains.Trim();
+
+            var authorHits = await baseQuery
+                .Where(b => b.AuthorOrEditor.Contains(author))
+                .Select(b => new BookListItemDto(
+                    b.BookId,
+                    b.BookNumber,
+                    b.Title,
+                    b.AuthorOrEditor,
+                    b.Subject.Name,
+                    b.Isbn,
+                    db.Loans.Any(l => l.BookId == b.BookId)
+                ))
+                .ToListAsync(cancellationToken);
+
+            results.AddRange(authorHits);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.SearchContains) ||
+            !string.IsNullOrWhiteSpace(query.AuthorContains))
+            return results
+                .GroupBy(x => x.BookId)
+                .Select(g => g.First())
+                .OrderBy(x => x.Title)
+                .ToList();
+
+
+        var allHits = await baseQuery
             .Select(b => new BookListItemDto(
                 b.BookId,
                 b.BookNumber,
@@ -52,7 +92,17 @@ internal sealed partial class BookService(LibraryDbContext db) : IBookService
                 db.Loans.Any(l => l.BookId == b.BookId)
             ))
             .ToListAsync(cancellationToken);
+
+        results.AddRange(allHits);
+
+
+        return results
+            .GroupBy(x => x.BookId)
+            .Select(g => g.First())
+            .OrderBy(x => x.Title)
+            .ToList();
     }
+
 
     public async Task<Results<BookDetailsDto>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {

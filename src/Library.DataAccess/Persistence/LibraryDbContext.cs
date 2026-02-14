@@ -59,7 +59,7 @@ public class LibraryDbContext(DbContextOptions<LibraryDbContext> options) : DbCo
                     "BookNumber LIKE '[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]'"
                 );
             });
-            
+
             entity.HasOne(d => d.Subject)
                 .WithMany(p => p.Books)
                 .HasForeignKey(d => d.SubjectId)

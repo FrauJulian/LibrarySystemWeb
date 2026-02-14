@@ -12,11 +12,12 @@ internal sealed class StudentService(LibraryDbContext db) : IStudentService
     public async Task<IReadOnlyList<StudentListItemDto>> SearchAsync(StudentSearchQuery query,
         CancellationToken cancellationToken = default)
     {
-        var q = db.Students.AsNoTracking();
+        var data = db.Students.AsNoTracking();
 
-        if (string.IsNullOrWhiteSpace(query.NameContains))
-            return await q
-                .OrderBy(student => student.LastName).ThenBy(student => student.FirstName)
+        if (string.IsNullOrWhiteSpace(query.SeachContains))
+            return await data
+                .OrderBy(student => student.LastName)
+                .ThenBy(student => student.FirstName)
                 .Select(student => new StudentListItemDto(
                     student.StudentId,
                     student.CardNumber,
@@ -26,13 +27,17 @@ internal sealed class StudentService(LibraryDbContext db) : IStudentService
                     student.Loans.Count
                 ))
                 .ToListAsync(cancellationToken);
-        {
-            var term = query.NameContains.Trim();
-            q = q.Where(student => (student.FirstName + " " + student.LastName).Contains(term) ||
-                                   student.LastName.Contains(term) || student.FirstName.Contains(term));
-        }
 
-        return await q
+        var term = query.SeachContains.Trim();
+
+        data = data.Where(student =>
+            (student.FirstName + " " + student.LastName).Contains(term) ||
+            student.LastName.Contains(term) ||
+            student.FirstName.Contains(term) ||
+            student.CardNumber.Contains(term)
+        );
+
+        return await data
             .OrderBy(student => student.LastName).ThenBy(student => student.FirstName)
             .Select(student => new StudentListItemDto(
                 student.StudentId,

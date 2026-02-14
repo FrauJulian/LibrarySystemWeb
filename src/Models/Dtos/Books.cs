@@ -34,4 +34,4 @@ public sealed record BookUpsertDto(
     DateOnly? PublishedOn
 );
 
-public sealed record BookSearchQuery(string? TitleContains, string? AuthorContains, int? SubjectId);
+public sealed record BookSearchQuery(string? SearchContains, string? AuthorContains, int? SubjectId);
